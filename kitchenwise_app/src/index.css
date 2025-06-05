@@ -1,3 +1,6 @@
+/* Import Quicksand and Inter from Google Fonts for best rendering */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Inter:wght@400;500;700&display=swap');
+
 /* Base resets and coding styles */
 * {
   box-sizing: border-box;
@@ -6,7 +9,7 @@
 body {
   margin: 0;
   padding: 0;
-  /* Sushi/food/kitchen style: Quicksand plus modern web UI sans-serifs */
+  /* Kitchen-style: Quicksand (primary), Inter secondary, web-safe fallback */
   font-family: 'Quicksand', 'Inter', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
