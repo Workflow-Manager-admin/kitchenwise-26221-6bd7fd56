@@ -25,15 +25,17 @@ function App() {
   else ScreenComponent = HomeScreen;
 
   return (
-    <div className="app">
-      <Navbar />
-      <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
-        <div className="container">
-          <ScreenComponent />
-        </div>
-      </main>
-      <TabBar currentTab={tab} onTabChange={setTab} />
-    </div>
+    <FavoritesProvider>
+      <div className="app">
+        <Navbar />
+        <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
+          <div className="container">
+            <ScreenComponent />
+          </div>
+        </main>
+        <TabBar currentTab={tab} onTabChange={setTab} />
+      </div>
+    </FavoritesProvider>
   );
 }
 
