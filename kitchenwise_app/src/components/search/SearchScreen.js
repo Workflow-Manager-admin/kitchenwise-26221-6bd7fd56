@@ -6,7 +6,11 @@ import { fetchRecipes } from "../../utils/api";
 
 // PUBLIC_INTERFACE
 /**
- * SearchScreen - central feature, manage search state for ingredients and filters, load recipes
+ * SearchScreen - manages ingredient/filter state, fetches real API recipes, and displays results.
+ *
+ * This component now handles LIVE Spoonacular API recipe search.
+ * - Handles API/network errors (shows user notification if key missing, quota exceeded, or connectivity issues).
+ * - Requires .env with REACT_APP_SPOONACULAR_API_KEY (see utils/api.js for setup).
  */
 function SearchScreen() {
   const [ingredients, setIngredients] = useState([]);
@@ -17,22 +21,38 @@ function SearchScreen() {
   const [filters, setFilters] = useState({});
   const [recipes, setRecipes] = useState([]);
   const [searching, setSearching] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(""); // NEW: track API/network errors
 
-  // Effect: Load new results when ingredients/filters change
+  // Effect: Load new results when ingredients/filters change (real async with error handling)
   useEffect(() => {
     let active = true;
+    setErrorMsg(""); // clear any previous error message
     if (ingredients.length === 0) {
       setRecipes([]);
+      setSearching(false);
       return;
     }
     setSearching(true);
-    fetchRecipes({ ingredients, filters }).then(results => {
-      if (active) {
-        setRecipes(results);
-        setSearching(false);
-      }
-    });
-    return () => { active = false; };
+    fetchRecipes({ ingredients, filters })
+      .then(results => {
+        if (active) {
+          setRecipes(results || []);
+          setSearching(false);
+        }
+      })
+      .catch(err => {
+        if (active) {
+          setErrorMsg(
+            err.message ||
+              "Unknown error during recipe search. Check your API key, API quota, or internet connection."
+          );
+          setRecipes([]);
+          setSearching(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
   }, [ingredients, filters]);
 
   // On add ingredient
@@ -61,6 +81,22 @@ function SearchScreen() {
   return (
     <section style={{ paddingTop: 120, paddingBottom: 72 }}>
       <h2>Search Recipes</h2>
+      <div style={{ marginBottom: 10, fontSize: 13, color: "var(--text-secondary)" }}>
+        {/* Info for initial API setup */}
+        The recipe search uses the real Spoonacular API.<br/>
+        <span>
+          {/* Slight hint about .env */}
+          <b>Requires setup:</b> See&nbsp;
+          <code>REACT_APP_SPOONACULAR_API_KEY</code>
+          &nbsp;in your <b>.env</b> (not committed). Details in <code>src/utils/api.js</code>.
+        </span>
+      </div>
+      {/* Error message display */}
+      {errorMsg && (
+        <div style={{ background: "#ffecec", color: "#b80000", border: "1px solid #ffbebe", marginBottom: 18, borderRadius: 8, padding: 10, fontSize: 15 }}>
+          ⚠️ <b>Error:</b> {errorMsg}
+        </div>
+      )}
       <IngredientInput
         value=""
         onIngredientAdd={handleAddIngredient}
