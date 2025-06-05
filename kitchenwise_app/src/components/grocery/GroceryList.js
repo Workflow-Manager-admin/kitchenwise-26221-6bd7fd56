@@ -18,7 +18,8 @@ function GroceryList({ items, onToggle, onDelete }) {
       listStyle: "none",
       padding: 0,
       margin: 0,
-      maxWidth: 420,
+      maxWidth: 430,
+      marginTop: 8
     }}>
       {items.map((item) => (
         <GroceryItem
