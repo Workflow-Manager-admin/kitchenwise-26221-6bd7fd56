@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap');
+
 :root {
   --base-light: #61ffd6;
   --base-dark: #0d2340;
@@ -20,7 +22,9 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  /* Kitchen-inspired: Quicksand is playful, fresh, rounded; ideal for food/cooking UIs.
+     Fallbacks: Inter > Roboto > Helvetica/Arial > generic modern sans-serif */
+  font-family: 'Quicksand', 'Inter', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   background-color: var(--base-dark);
   color: var(--text-color);
   -webkit-font-smoothing: antialiased;
