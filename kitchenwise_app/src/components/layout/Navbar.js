@@ -1,7 +1,7 @@
 import React from "react";
 
 // PUBLIC_INTERFACE
-function Navbar() {
+function Navbar({ onSettings }) {
   /**
    * Persistent top navigation bar (shows logo, quick actions).
    */
@@ -11,7 +11,15 @@ function Navbar() {
         <div className="logo">
           <span className="logo-symbol">*</span> KitchenWise
         </div>
-        <button className="btn" style={{ minWidth: 96 }}>Settings</button>
+        <button
+          className="btn"
+          style={{ minWidth: 96 }}
+          onClick={onSettings}
+          aria-label="Open User Settings"
+          type="button"
+        >
+          Settings
+        </button>
       </div>
     </nav>
   );
