@@ -3,6 +3,7 @@ import IngredientInput from "./IngredientInput";
 import FiltersPanel from "./FiltersPanel";
 import RecipeResults from "./RecipeResults";
 import { fetchRecipes } from "../../utils/api";
+import RecipeDetail from "../recipe/RecipeDetail";
 
 // PUBLIC_INTERFACE
 /**
@@ -22,6 +23,7 @@ function SearchScreen() {
   const [recipes, setRecipes] = useState([]);
   const [searching, setSearching] = useState(false);
   const [errorMsg, setErrorMsg] = useState(""); // NEW: track API/network errors
+  const [selectedRecipe, setSelectedRecipe] = useState(null); // Holds selected recipe for detail view
 
   // Improved: Robust search effect with atomic state reset and request id tracking
   useEffect(() => {
@@ -81,13 +83,17 @@ function SearchScreen() {
   };
 
   const handleRecipeClick = recipe => {
-    // TODO: show detail view (modal/navigation)
-    alert(`Recipe: ${recipe.title}`);
+    setSelectedRecipe(recipe);
   };
 
   // On add from recent
   const handleAddRecent = rec => {
     if (!ingredients.includes(rec)) setIngredients(prev => [...prev, rec]);
+  };
+
+  // Handle closing the detail modal
+  const handleCloseDetail = () => {
+    setSelectedRecipe(null);
   };
 
   return (
@@ -156,6 +162,48 @@ function SearchScreen() {
         loading={searching}
         onRecipeClick={handleRecipeClick}
       />
+
+      {/* Modal-style detail overlay when a recipe is selected */}
+      {selectedRecipe && (
+        <div
+          style={{
+            background: "rgba(0,0,0,0.45)",
+            position: "fixed",
+            top: 0, left: 0, width: "100vw", height: "100vh",
+            zIndex: 9999,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+          onClick={handleCloseDetail}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            style={{
+              background: "var(--base-dark)",
+              borderRadius: 14,
+              minWidth: 320, maxWidth: 430,
+              padding: 28,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.22)",
+              position: "relative"
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              aria-label="Close detail"
+              onClick={handleCloseDetail}
+              style={{
+                position: "absolute",
+                top: 8, right: 14,
+                fontSize: 22,
+                background: "none", border: "none", color: "var(--text-secondary)", cursor: "pointer"
+              }}
+            >×</button>
+            <RecipeDetail recipe={selectedRecipe} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
