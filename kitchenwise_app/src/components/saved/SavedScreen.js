@@ -5,6 +5,7 @@ import FavoriteList from "./FavoriteList";
 function SavedScreen() {
   /**
    * List of favorited recipes, empty state shown if none.
+   * State reflects instantly from persistent FavoritesContext.
    */
   return (
     <section style={{ paddingTop: 120, paddingBottom: 72 }}>
