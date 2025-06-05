@@ -1,90 +1,98 @@
 //
 // utils/api.js
 //
+// Real Spoonacular Recipe API integration for KitchenWise.
+//
+// NOTE: You must provide your Spoonacular API key in an .env file at the root of the kitchenwise_app project:
+// Example .env entry (DO NOT commit your key!):
+//   REACT_APP_SPOONACULAR_API_KEY=your_actual_spoonacular_key_here
+//
+
+const SPOONACULAR_API_URL = "https://api.spoonacular.com/recipes/complexSearch";
 
 // PUBLIC_INTERFACE
 /**
- * Simulate fetching recipes from an API using ingredients and filters.
- * Returns a promise (asynchronous API).
- * Filters - { diet: "vegetarian"/"vegan"/null, maxCost: number (optional) }
- * ingredients - array of ingredient strings
+ * Fetch recipes from Spoonacular based on input ingredients and filters.
+ *
+ * @param {Object} params
+ *    - ingredients: array of strings
+ *    - filters: { diet: 'vegetarian'|'vegan'|..., maxCost: number, sortBy: 'cost'|'prep'|'rating' }
+ * @returns {Promise<Array>} List of recipe objects [{ id, title, image, ... }]
+ *
+ * Requirements:
+ * - API key must be set in REACT_APP_SPOONACULAR_API_KEY in your .env file.
  */
 export async function fetchRecipes({ ingredients, filters }) {
-  // For mock: filter over static mock data
-  const MOCK_RECIPES = [
-    {
-      id: 1,
-      title: "Veggie Stir Fry",
-      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=60",
-      ingredients: ["broccoli", "carrot", "bell pepper"],
-      prepTime: 20,
-      costPerServing: 3,
-      diet: "vegetarian",
-      tags: ["vegetarian", "quick"],
-      rating: 4.7,
-    },
-    {
-      id: 2,
-      title: "Chickpea Curry",
-      image: "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=200&q=60",
-      ingredients: ["chickpea", "onion", "tomato"],
-      prepTime: 30,
-      costPerServing: 2.5,
-      diet: "vegan",
-      tags: ["vegan", "budget"],
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      title: "Chicken Alfredo",
-      image: "https://images.unsplash.com/photo-1458642849426-cfb724f15ef7?auto=format&fit=crop&w=200&q=60",
-      ingredients: ["chicken", "pasta", "cream"],
-      prepTime: 35,
-      costPerServing: 4.5,
-      diet: "non-vegetarian",
-      tags: ["family"],
-      rating: 4.2,
-    },
-    {
-      id: 4,
-      title: "Simple Tomato Pasta",
-      image: "https://images.unsplash.com/photo-1523987355523-c7b5b0723c41?auto=format&fit=crop&w=200&q=60",
-      ingredients: ["pasta", "tomato"],
-      prepTime: 20,
-      costPerServing: 1.8,
-      diet: "vegetarian",
-      tags: ["vegetarian", "budget"],
-      rating: 4.1,
-    },
-    // ...more as needed
-  ];
-
-  let filtered = MOCK_RECIPES;
-
-  // Basic ingredients filter: must contain at least one input ingredient
-  if (ingredients && ingredients.length > 0) {
-    filtered = filtered.filter(recipe =>
-      recipe.ingredients.some(ri =>
-        ingredients.some(input => ri.toLowerCase().includes(input.toLowerCase()))
-      )
+  const apiKey = process.env.REACT_APP_SPOONACULAR_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "Missing Spoonacular API Key. Please create a .env file in the root of kitchenwise_app and define REACT_APP_SPOONACULAR_API_KEY=your_key"
     );
   }
-  if (filters && filters.diet && filters.diet !== "any") {
-    filtered = filtered.filter(r =>
-      (filters.diet === "vegan" && r.diet === "vegan") ||
-      (filters.diet === "vegetarian" && (r.diet === "vegetarian" || r.diet === "vegan"))
-    );
-  }
-  if (filters && typeof filters.maxCost === "number") {
-    filtered = filtered.filter(r => r.costPerServing <= filters.maxCost);
-  }
-  // Sort if requested
-  if (filters && filters.sortBy) {
-    if (filters.sortBy === "cost") filtered.sort((a, b) => a.costPerServing - b.costPerServing);
-    if (filters.sortBy === "prep") filtered.sort((a, b) => a.prepTime - b.prepTime);
-    if (filters.sortBy === "rating") filtered.sort((a, b) => b.rating - a.rating);
+  // Prepare query params
+  const params = [];
+  if (ingredients && ingredients.length > 0)
+    params.push("includeIngredients=" + encodeURIComponent(ingredients.join(",")));
+  params.push("fillIngredients=true");
+  params.push("number=10");
+  params.push("addRecipeInformation=true");
+  if (filters?.diet && filters.diet !== "any")
+    params.push("diet=" + encodeURIComponent(filters.diet));
+  params.push("apiKey=" + encodeURIComponent(apiKey));
+  const url = SPOONACULAR_API_URL + "?" + params.join("&");
+
+  let resp;
+  try {
+    resp = await fetch(url);
+    if (!resp.ok) {
+      let msg = "Recipe API request failed: " + resp.statusText;
+      if (resp.status === 402) msg += " (likely API quota exhausted)";
+      throw new Error(msg);
+    }
+  } catch (err) {
+    throw new Error("Network/API error: " + err.message);
   }
 
-  // Simulate network latency
-  return new Promise(resolve => setTimeout(() => resolve(filtered), 500));
+  let results;
+  try {
+    const data = await resp.json();
+    results = (data.results || []).map((item) => ({
+      id: item.id,
+      title: item.title,
+      image: item.image,
+      prepTime: item.readyInMinutes,
+      costPerServing: item.pricePerServing ? (item.pricePerServing / 100) : undefined,
+      diet: (item.vegan ? "vegan" : item.vegetarian ? "vegetarian" : "non-vegetarian"),
+      tags: [
+        ...(item.vegan ? ["vegan"] : []),
+        ...(item.vegetarian && !item.vegan ? ["vegetarian"] : []),
+        ...(item.glutenFree ? ["gluten-free"] : []),
+        ...(item.diets || [])
+      ],
+      rating: item.spoonacularScore || undefined,
+    }));
+    if (filters && typeof filters.maxCost === "number") {
+      results = results.filter(r => typeof r.costPerServing === "number" && r.costPerServing <= filters.maxCost);
+    }
+    if (filters?.sortBy) {
+      if (filters.sortBy === "cost")
+        results.sort((a, b) => (a.costPerServing || 0) - (b.costPerServing || 0));
+      if (filters.sortBy === "prep")
+        results.sort((a, b) => (a.prepTime || 0) - (b.prepTime || 0));
+      if (filters.sortBy === "rating")
+        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+    return results;
+  } catch (err) {
+    throw new Error("Error parsing recipe API response: " + err.message);
+  }
 }
+
+/*
+ * === Spoonacular API connection guide ===
+ * 1. Register at https://spoonacular.com/food-api for an API key.
+ * 2. Create kitchenwise_app/.env with:
+ *      REACT_APP_SPOONACULAR_API_KEY=your_spoonacular_key_here
+ * 3. Restart the dev server after updating .env.
+ * 4. Do not expose or commit your API key to the repository.
+ */
