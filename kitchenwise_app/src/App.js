@@ -1,35 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
+// Layout and screens
+import Navbar from "./components/layout/Navbar";
+import TabBar from "./components/layout/TabBar";
+import HomeScreen from "./components/home/HomeScreen";
+import SearchScreen from "./components/search/SearchScreen";
+import GroceryScreen from "./components/grocery/GroceryScreen";
+import SavedScreen from "./components/saved/SavedScreen";
+
+/**
+ * The App component manages the global layout, tab switching, and main navigation.
+ */
 function App() {
+  const [tab, setTab] = useState("Home");
+
+  // Screen selection logic
+  let ScreenComponent;
+  if (tab === "Home") ScreenComponent = HomeScreen;
+  else if (tab === "Search") ScreenComponent = SearchScreen;
+  else if (tab === "Grocery") ScreenComponent = GroceryScreen;
+  else if (tab === "Saved") ScreenComponent = SavedScreen;
+  else ScreenComponent = HomeScreen;
+
   return (
     <div className="app">
-      <nav className="navbar">
+      <Navbar />
+      <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <div className="logo">
-              <span className="logo-symbol">*</span> KAVIA AI
-            </div>
-            <button className="btn">Template Button</button>
-          </div>
-        </div>
-      </nav>
-
-      <main>
-        <div className="container">
-          <div className="hero">
-            <div className="subtitle">AI Workflow Manager Template</div>
-            
-            <h1 className="title">kitchenwise_app</h1>
-            
-            <div className="description">
-              Start building your application.
-            </div>
-            
-            <button className="btn btn-large">Button</button>
-          </div>
+          <ScreenComponent />
         </div>
       </main>
+      <TabBar currentTab={tab} onTabChange={setTab} />
     </div>
   );
 }
