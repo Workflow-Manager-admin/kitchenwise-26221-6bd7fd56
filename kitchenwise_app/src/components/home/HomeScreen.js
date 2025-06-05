@@ -55,7 +55,20 @@ function HomeScreen() {
           Find hundreds of easy, budget-friendly recipes using what&apos;s in your kitchen—
           just enter your ingredients and start cooking!
         </div>
-        <a href="#" className="btn btn-large hero-cta" style={{ marginTop: 18 }}>
+        <a
+          href="#"
+          className="btn btn-large hero-cta"
+          style={{ marginTop: 18 }}
+          onClick={e => {
+            if (typeof (typeof onQuickSearch !== "undefined" && onQuickSearch) === "function") {
+              e.preventDefault();
+              onQuickSearch();
+            } else {
+              // fallback, do nothing or just prevent scroll
+              e.preventDefault();
+            }
+          }}
+        >
           🔎 Start a Quick Search
         </a>
         <div className="hero-note" style={{

@@ -18,8 +18,15 @@ function App() {
   const [tab, setTab] = useState("Home");
 
   // Screen selection logic
+  // Callback for HomeScreen to trigger search tab
+  const handleQuickSearch = () => setTab("Search");
+
   let ScreenComponent;
-  if (tab === "Home") ScreenComponent = HomeScreen;
+  let screenProps = {};
+  if (tab === "Home") {
+    ScreenComponent = HomeScreen;
+    screenProps = { onQuickSearch: handleQuickSearch };
+  }
   else if (tab === "Search") ScreenComponent = SearchScreen;
   else if (tab === "Grocery") ScreenComponent = GroceryScreen;
   else if (tab === "Saved") ScreenComponent = SavedScreen;
@@ -32,7 +39,8 @@ function App() {
           <Navbar />
           <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
             <div className="container">
-              <ScreenComponent />
+              {/* Pass screenProps only for HomeScreen */}
+              <ScreenComponent {...screenProps} />
             </div>
           </main>
           <TabBar currentTab={tab} onTabChange={setTab} />
