@@ -1,9 +1,21 @@
 :root {
-  --base-light: #00ffff;
-  --base-dark: #00008b;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --base-light: #61ffd6;
+  --base-dark: #0d2340;
+  --base-accent: #ffe5bc;
+  --card-bg: #253e4b;
+  --tabbar-bg: #11233a;
+  --tabbar-active: #8df6c3;
+  --kitchen-yellow: #ffeba7;
+  --kitchen-shadow: 0 3px 28px rgba(0, 44, 90, 0.15), 0 2px 8px #ffeab74a;
+  --text-color: #fffdf8;
+  --text-secondary: rgba(255, 255, 255, 0.78);
+  --border-color: rgba(255, 255, 255, 0.14);
+  --radius-xl: 18px;
+  --radius-lg: 12px;
+  --radius: 9px;
+  --shadow-card: 0 5px 30px 0 rgba(98,157,125,0.071), 0 1.5px 16px 0 #003c47a3;
+  --shadow-tab: 0 3px 30px 0 rgba(0,0,0,0.11);
+  --transition-short: 0.17s cubic-bezier(.72,.07,.41,.97);
 }
 
 body {
