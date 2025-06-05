@@ -12,66 +12,36 @@ import { useGroceryList } from "./GroceryListContext";
  * - Links to GroceryList component for list, check, and delete logic
  */
 function GroceryScreen() {
-  // Load initial list from localStorage
-  const [items, setItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem("kw-grocery");
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  // Now uses context!
   const [input, setInput] = useState("");
+  const {
+    items,
+    addItem,
+    toggleItem,
+    deleteItem,
+    clearList
+  } = useGroceryList();
 
-  // Keep localStorage in sync whenever items change
-  useEffect(() => {
-    localStorage.setItem("kw-grocery", JSON.stringify(items));
-  }, [items]);
-
-  // PUBLIC_INTERFACE
-  function addItem(text) {
-    const value = (text || input).trim();
-    if (!value) return;
-    setItems((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString() + Math.random().toString(16).slice(2), // simple unique
-        name: value,
-        checked: false,
-      },
-    ]);
-    setInput("");
+  function handleInputKey(e) {
+    if (e.key === "Enter") {
+      handleAdd();
+    }
   }
 
-  // PUBLIC_INTERFACE
-  function toggleItem(id) {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item
-      )
-    );
+  function handleAdd() {
+    if (input.trim()) {
+      addItem(input.trim());
+      setInput("");
+    }
   }
 
-  // PUBLIC_INTERFACE
-  function deleteItem(id) {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  }
-
-  // PUBLIC_INTERFACE
-  function clearList() {
+  function handleClear() {
     if (
       window.confirm(
         "Clear all items from your grocery list? This cannot be undone."
       )
     ) {
-      setItems([]);
-    }
-  }
-
-  // PUBLIC_INTERFACE
-  function handleInputKey(e) {
-    if (e.key === "Enter") {
-      addItem();
+      clearList();
     }
   }
 
@@ -83,7 +53,7 @@ function GroceryScreen() {
         style={{ display: "flex", gap: 8, marginBottom: 18, alignItems: "center" }}
         onSubmit={e => {
           e.preventDefault();
-          addItem();
+          handleAdd();
         }}
         autoComplete="off"
       >
@@ -116,7 +86,7 @@ function GroceryScreen() {
         {items.length > 0 && (
           <button
             type="button"
-            onClick={clearList}
+            onClick={handleClear}
             style={{
               background: "#ff4949",
               color: "white",

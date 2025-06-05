@@ -9,6 +9,7 @@ import SearchScreen from "./components/search/SearchScreen";
 import GroceryScreen from "./components/grocery/GroceryScreen";
 import SavedScreen from "./components/saved/SavedScreen";
 import { FavoritesProvider } from "./components/saved/FavoritesContext";
+import { GroceryListProvider } from "./components/grocery/GroceryListContext";
 
 /**
  * The App component manages the global layout, tab switching, and main navigation.
@@ -26,15 +27,17 @@ function App() {
 
   return (
     <FavoritesProvider>
-      <div className="app">
-        <Navbar />
-        <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
-          <div className="container">
-            <ScreenComponent />
-          </div>
-        </main>
-        <TabBar currentTab={tab} onTabChange={setTab} />
-      </div>
+      <GroceryListProvider>
+        <div className="app">
+          <Navbar />
+          <main style={{ minHeight: "75vh", paddingBottom: 76 }}>
+            <div className="container">
+              <ScreenComponent />
+            </div>
+          </main>
+          <TabBar currentTab={tab} onTabChange={setTab} />
+        </div>
+      </GroceryListProvider>
     </FavoritesProvider>
   );
 }
