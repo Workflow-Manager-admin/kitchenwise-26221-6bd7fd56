@@ -8,6 +8,7 @@ import HomeScreen from "./components/home/HomeScreen";
 import SearchScreen from "./components/search/SearchScreen";
 import GroceryScreen from "./components/grocery/GroceryScreen";
 import SavedScreen from "./components/saved/SavedScreen";
+import { FavoritesProvider } from "./components/saved/FavoritesContext";
 
 /**
  * The App component manages the global layout, tab switching, and main navigation.
