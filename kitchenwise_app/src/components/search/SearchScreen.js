@@ -23,29 +23,34 @@ function SearchScreen() {
   const [searching, setSearching] = useState(false);
   const [errorMsg, setErrorMsg] = useState(""); // NEW: track API/network errors
 
-  // Effect: Load new results when ingredients/filters change (real async with error handling)
+  // Improved: Robust search effect with atomic state reset and request id tracking
   useEffect(() => {
-    let active = true;
-    // Defensive clearing of state before every search (prevents stale UI/results)
+    // A unique sequential id for each search to avoid stale async results
+    let isActive = true;
+    // Use a ref to hold the latest request id across rerenders
+    if (!SearchScreen._searchSeq) SearchScreen._searchSeq = 1;
+    const reqId = ++SearchScreen._searchSeq;
+
+    // Atomically update all search-related state
     setErrorMsg("");
     setRecipes([]);
-    setSearching(!!ingredients.length); // searching only if there's something to search for
+    setSearching(!!ingredients.length);
 
     if (ingredients.length === 0) {
       setSearching(false);
       return;
     }
 
-    // Using a unique instance per-search guarantees 'active' closure is never stale.
     fetchRecipes({ ingredients, filters })
       .then(results => {
-        if (active) {
+        // Only update if this is the latest request
+        if (isActive && reqId === SearchScreen._searchSeq) {
           setRecipes(results || []);
           setSearching(false);
         }
       })
       .catch(err => {
-        if (active) {
+        if (isActive && reqId === SearchScreen._searchSeq) {
           setErrorMsg(
             err.message ||
               "Unknown error during recipe search. Check your API key, API quota, or internet connection."
@@ -54,9 +59,12 @@ function SearchScreen() {
           setSearching(false);
         }
       });
+
     return () => {
-      active = false;
+      isActive = false;
+      // Optionally, future: cancelable fetch (not with plain fetch)
     };
+    // eslint-disable-next-line
   }, [ingredients, filters]);
 
   // On add ingredient
