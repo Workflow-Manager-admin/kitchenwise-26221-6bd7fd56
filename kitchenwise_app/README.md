@@ -29,7 +29,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 ## Customization
 
-### Colors
+### Colors & Typography
 
 The main brand colors are defined as CSS variables in `src/App.css`:
 
@@ -42,6 +42,11 @@ The main brand colors are defined as CSS variables in `src/App.css`:
   --border-color: rgba(255, 255, 255, 0.1);
 }
 ```
+
+#### Kitchen-inspired Typography
+
+Global font is set to **Quicksand** (Google Fonts, kitchen/UI friendly), falling back to Inter, Roboto, and standard web sans-serif fonts.
+You can change the primary font in `src/App.css` and `src/index.css` by editing the `font-family`.
 
 ### Components
 
