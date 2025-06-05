@@ -13,12 +13,12 @@ const HERO_IMAGES = [
   }
 ];
 
+/**
+ * Home screen entry point: Quick search, recent recipes.
+ * Enhanced with hero/banner, kitchen visuals, brand tagline, CTA.
+ */
 // PUBLIC_INTERFACE
-function HomeScreen() {
-  /**
-   * Home screen entry point: Quick search, recent recipes.
-   * Enhanced with hero/banner, kitchen visuals, brand tagline, CTA.
-   */
+function HomeScreen({ onQuickSearch }) {
 
   // Pick one hero randomly for visual freshness
   const hero = HERO_IMAGES[Math.floor(Math.random() * HERO_IMAGES.length)];
