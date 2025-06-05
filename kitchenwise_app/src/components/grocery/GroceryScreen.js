@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+// Refactored to use GroceryListContext for state management!
+import React, { useState } from "react";
 import GroceryList from "./GroceryList";
+import { useGroceryList } from "./GroceryListContext";
 
 // PUBLIC_INTERFACE
 /**
