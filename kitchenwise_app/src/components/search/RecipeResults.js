@@ -33,6 +33,7 @@ function RecipeResults({ recipes, loading, onRecipeClick }) {
       {recipes.map(recipe => (
         <div key={recipe.id}>
           <RecipeCard
+            id={recipe.id}
             title={recipe.title}
             image={recipe.image}
             tags={recipe.tags}
