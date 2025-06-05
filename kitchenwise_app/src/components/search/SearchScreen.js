@@ -26,13 +26,17 @@ function SearchScreen() {
   // Effect: Load new results when ingredients/filters change (real async with error handling)
   useEffect(() => {
     let active = true;
-    setErrorMsg(""); // clear any previous error message
+    // Defensive clearing of state before every search (prevents stale UI/results)
+    setErrorMsg("");
+    setRecipes([]);
+    setSearching(!!ingredients.length); // searching only if there's something to search for
+
     if (ingredients.length === 0) {
-      setRecipes([]);
       setSearching(false);
       return;
     }
-    setSearching(true);
+
+    // Using a unique instance per-search guarantees 'active' closure is never stale.
     fetchRecipes({ ingredients, filters })
       .then(results => {
         if (active) {
