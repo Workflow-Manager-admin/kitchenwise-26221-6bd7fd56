@@ -23,6 +23,7 @@ function RecipeCard({ title, image, tags, onClick, id, recipe }) {
   function handleFavoriteClick(e) {
     e.stopPropagation();
     favCtx.toggleFavorite?.(cardRecipe);
+    // No additional action; state will re-render from context.
   }
 
   return (
