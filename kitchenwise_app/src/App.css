@@ -65,6 +65,191 @@ body {
   gap: 24px;
 }
 
+/* === HERO/BANNER styles for HomeScreen === */
+.hero-banner {
+  padding-top: 120px;
+  padding-bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  background: linear-gradient(180deg, #020b32 0%, #001e3c 80%, var(--base-dark) 100%);
+}
+
+.hero-img-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 21 / 7.5;
+  position: relative;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 6px 32px 0 rgba(0, 0, 0, 0.19), 0 0 0 2px rgba(0,255,255,0.09);
+  margin-bottom: 0;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.90) saturate(1.11);
+  transition: filter 0.18s;
+  user-select: none;
+  pointer-events: none;
+  min-height: 200px;
+  min-width: 100%;
+}
+
+.hero-img-wrapper:hover .hero-img, .hero-img-wrapper:focus-within .hero-img {
+  filter: brightness(0.97) saturate(1.19);
+}
+
+.hero-overlay {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: linear-gradient(120deg, rgba(0,8,40, 0.22) 60%, rgba(0, 255, 255, 0.10) 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.hero-brand-logo {
+  background: rgba(0,8,35,0.86);
+  border-radius: 14px 0 0 0;
+  margin: 0 0 22px 0;
+  padding: 14px 34px 10px 24px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 2.1rem;
+  color: #f5fcff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  pointer-events: none;
+}
+.hero-logo-emoji {
+  font-size: 2.5rem;
+  margin-right: 18px;
+  filter: drop-shadow(0 0 2px #fff5);
+}
+.hero-app-name {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--base-light);
+  background: linear-gradient(90deg, var(--base-light) 50%, #4de2aa 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-content {
+  margin-top: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 96%;
+  max-width: 680px;
+  z-index: 10;
+  position: relative;
+}
+
+.hero-content .subtitle {
+  color: var(--base-light);
+  font-size: 1.19rem;
+  font-weight: 600;
+  letter-spacing: .4px;
+}
+
+.hero-content .title {
+  font-size: 2.85rem;
+  font-weight: 700;
+  line-height: 1.18;
+  color: #fff;
+  margin: 0 0 14px 0;
+  text-shadow: 0 2px 14px #00324a8a;
+}
+
+.hero-content .description {
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  margin-top: 5px;
+  max-width: 540px;
+}
+
+.hero-cta {
+  background: linear-gradient(90deg, var(--base-light) 75%, #a6fff6);
+  color: #000046;
+  border-radius: 22px;
+  font-weight: 600;
+  font-size: 1.11rem;
+  letter-spacing: .1px;
+  box-shadow: 0 4px 10px #00c0ffc0;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  padding: 13px 36px;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  display: inline-block;
+  transition: filter 0.13s, background 0.13s;
+}
+
+.hero-cta:hover, .hero-cta:focus {
+  filter: brightness(0.97) saturate(1.33);
+  background: linear-gradient(90deg, var(--base-light) 65%, #65ffd1);
+  color: #000054;
+}
+
+.hero-note {
+  opacity: 0.91;
+  font-size: 1rem;
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: .2px;
+}
+
+@media (max-width: 720px) {
+  .hero-content .title {
+    font-size: 2.2rem;
+  }
+  .hero-content {
+    margin-top: 28px;
+    max-width: 96vw;
+  }
+  .hero-img-wrapper {
+    aspect-ratio: 9/4;
+    border-radius: 17px;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-img-wrapper {
+    margin: 0 0 0 0;
+    aspect-ratio: 13 / 7.2;
+    border-radius: 11px;
+    min-height: 120px;
+    max-width: 97vw;
+  }
+  .hero-content .title {
+    font-size: 1.33rem;
+  }
+  .hero-content .description {
+    font-size: 1.03rem;
+  }
+  .hero-brand-logo {
+    font-size: 1.17rem;
+    padding: 7px 16px 7px 9px;
+    border-radius:10px 0 0 0;
+  }
+}
+
+
 .subtitle {
   color: var(--base-light);
   font-weight: 500;
