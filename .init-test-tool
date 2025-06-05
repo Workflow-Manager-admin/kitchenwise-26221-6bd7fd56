@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/kitchenwise-26221-6bd7fd56/kitchenwise_app"
+}
